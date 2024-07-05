@@ -1,0 +1,23 @@
+[package]
+name = "ecu-diag"
+authors = ["ION MOBILITY"]
+version = "1.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+automotive_diag = "0.1"
+j2534_rust = { version = "1.5.0" }
+serde_json = { version = "1.0.79" }
+libloading = { version = "0.7.3" }
+enum-repr = { version = "0.2.6" }
+log="0.4.16"
+strum = "0.24"
+strum_macros = "0.24"
+thiserror="1.0.44"
+enum2repr = "0.1"
+env_logger = "0.10.0"
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.12.0", features = ["full"] }

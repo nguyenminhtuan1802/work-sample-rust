@@ -1,0 +1,248 @@
+import { LineEdit, Button, GridBox, VerticalBox, TabWidget, HorizontalBox, AboutSlint } from "std-widgets.slint";
+import { ServiewView, Action } from "service.slint";
+import { MonitorView } from "monitor.slint";
+
+export { Action }
+
+export component AppUi inherits Window {
+
+    title: "ION Diagnostic";
+    icon: @image-url("../icons/ionmobility_logo.jpg");
+    preferred_height: 1000px;
+    preferred_width: 1300px;
+
+    private property <bool> message-visible;
+    in-out property <string> cargo-ui-version: "x.y.z";
+    out property <int> tab-selected <=> tab.current-index;
+    callback open-url(string);
+
+    in property <string> service-output <=> service-view.output;
+    in property <int> diagnostics-session-state <=> service-view.diagostic-state;
+    in property <int> can-connection-state <=> service-view.can-connection-state;
+    in property <int> tcp-connection-state <=> service-view.tcp-connection-state;
+    in property <int> can-connection-state1 <=> monitor-view.can-connection-state;
+    in property <int> tcp-connection-state1 <=> monitor-view.tcp-connection-state;
+
+    in-out property <bool> is-streaming <=> service-view.is-streaming;
+    in-out property <Action> streaming-action <=> service-view.streaming-action;
+    in-out property <string> stream-action-text <=> service-view.stream-action-text;
+    in-out property <string> current-running-service <=> service-view.current-running-service;
+    callback action-submit <=> service-view.action-submit;
+    callback action-stream <=> service-view.action-stream;
+    callback action-cancel <=> service-view.action-cancel;
+    callback action-get-result <=> service-view.action-get-result;
+
+    in-out property <bool> monitor-view-is-streaming <=> monitor-view.is-streaming;
+    in-out property <string> monitor-view-start-action-text <=> monitor-view.start-action-text;
+    callback monitor-view-action-start <=> monitor-view.action-start;
+    in property <string> monitor-view-temp1 <=> monitor-view.temp1;
+    in property <string> monitor-view-temp2 <=> monitor-view.temp2;
+    in property <string> monitor-view-temp3 <=> monitor-view.temp3;
+    in property <string> monitor-view-temp4 <=> monitor-view.temp4;
+    in property <string> monitor-view-acc-x <=> monitor-view.acc-x;
+    in property <string> monitor-view-acc-y <=> monitor-view.acc-y;
+    in property <string> monitor-view-acc-z <=> monitor-view.acc-z;
+    in property <string> monitor-view-gyr-x <=> monitor-view.gyr-x;
+    in property <string> monitor-view-gyr-y <=> monitor-view.gyr-y;
+    in property <string> monitor-view-gyr-z <=> monitor-view.gyr-z;
+    in property <string> monitor-view-rke-rssi <=> monitor-view.rke-rssi;
+    in property <string> monitor-view-pke-rssi <=> monitor-view.pke-rssi;
+    in property <string> monitor-view-rke <=> monitor-view.rke;
+    in property <string> monitor-view-pke <=> monitor-view.pke;
+    in property <string> monitor-view-pke-distance <=> monitor-view.pke-distance;
+    in property <string> monitor-view-cpu-118 <=> monitor-view.cpu-118;
+    in property <string> monitor-view-cpu-148 <=> monitor-view.cpu-148;
+
+    in property <string> monitor-view-throttle-pct <=> monitor-view.throttle-pct;
+    in property <string> monitor-view-throttle-filt <=> monitor-view.throttle-filt;
+    in property <string> monitor-view-fw-rt-major <=> monitor-view.fw-rt-major;
+    in property <string> monitor-view-fw-rt-minor <=> monitor-view.fw-rt-minor;
+    in property <string> monitor-view-fw-tm-major <=> monitor-view.fw-tm-major;
+    in property <string> monitor-view-fw-tm-minor <=> monitor-view.fw-tm-minor;
+
+    in property <string> monitor-view-dtc-syscode <=> monitor-view.dtc-syscode;
+    in property <string> monitor-view-dtc-bmscode <=> monitor-view.dtc-bmscode;
+    in property <string> monitor-view-dtc-mccode <=> monitor-view.dtc-mccode;
+    in property <string> monitor-view-dtc-obccode <=> monitor-view.dtc-obccode;
+    in property <string> monitor-view-dtc-outputcode <=> monitor-view.dtc-outputcode;
+    in property <string> monitor-view-adc-12v <=> monitor-view.adc-12v;
+    in property <string> monitor-view-adc-5v <=> monitor-view.adc-5v;
+    in property <string> monitor-view-adc-3v <=> monitor-view.adc-3v;
+    in property <string> monitor-view-bike-status <=> monitor-view.bike-status;
+    in property <string> monitor-view-bike-lock <=> monitor-view.bike-lock;
+    in property <string> monitor-view-bms-status <=> monitor-view.bms-status;
+    in property <string> monitor-view-bms-predischarge-relay<=> monitor-view.bms-predischarge-relay;
+    in property <string> monitor-view-bms-discharge-relay<=> monitor-view.bms-discharge-relay;
+    in property <string> monitor-view-bms-charging-relay <=> monitor-view.bms-charging-relay;
+    in property <string> monitor-view-bms-dcdc-enable<=> monitor-view.bms-dcdc-enable;
+    in property <string> monitor-view-bms-charger <=> monitor-view.bms-charger;
+    in property <string> monitor-view-bms-soc-pct<=> monitor-view.bms-soc-pct;
+    in property <string> monitor-view-bms-soh-pct<=> monitor-view.bms-soh-pct;
+    in property <string> monitor-view-bms-volt<=> monitor-view.bms-volt;
+    in property <string> monitor-view-bms-current<=> monitor-view.bms-current;
+    in property <string> monitor-view-bms-alive-counter<=> monitor-view.bms-alive-counter;
+    in property <string> monitor-view-bms-dcdc-enable-status <=> monitor-view.bms-dcdc-enable-status;
+    in property <string> monitor-view-bms-max-discharge-current <=> monitor-view.bms-max-discharge-current;
+    in property <string> monitor-view-bms-max-regen-current <=> monitor-view.bms-max-regen-current;
+    in property <string> monitor-view-bms-highest-cell-volt <=> monitor-view.bms-highest-cell-volt;
+    in property <string> monitor-view-bms-lowest-cell-volt <=> monitor-view.bms-lowest-cell-volt;
+    in property <string> monitor-view-bms-max-temp<=> monitor-view.bms-max-temp;
+    in property <string> monitor-view-bms-max-temp-number <=> monitor-view.bms-max-temp-number;
+    in property <string> monitor-view-bms-min-temp<=> monitor-view.bms-min-temp;
+    in property <string> monitor-view-bms-min-temp-number <=> monitor-view.bms-min-temp-number;
+    in property <string> monitor-view-bms-charge-discharge-cycles <=> monitor-view.bms-charge-discharge-cycles;
+    in property <string> monitor-view-obc-activation-status <=> monitor-view.obc-activation-status;
+    in property <string> monitor-view-obc-output-dc-volt <=> monitor-view.obc-output-dc-volt;
+    in property <string> monitor-view-obc-output-dc-current <=> monitor-view.obc-output-dc-current;
+    in property <string> monitor-view-obc-max-temp<=> monitor-view.obc-max-temp;
+    in property <string> monitor-view-obc-input-volt<=> monitor-view.obc-input-volt;
+    in property <string> monitor-view-obc-input-current<=> monitor-view.obc-input-current;
+    in property <string> monitor-view-obc-stop-tx<=> monitor-view.obc-stop-tx;
+    in property <string> monitor-view-obc-alive-counter<=> monitor-view.obc-alive-counter;
+    in property <string> monitor-view-obc-error1-hw<=> monitor-view.obc-error1-hw;
+    in property <string> monitor-view-obc-error2-temp<=> monitor-view.obc-error2-temp;
+    in property <string> monitor-view-obc-error3-voltln<=> monitor-view.obc-error3-voltln;
+    in property <string> monitor-view-obc-error4-current<=> monitor-view.obc-error4-current;
+    in property <string> monitor-view-obc-error5-comn<=> monitor-view.obc-error5-comn;
+    in property <string> monitor-view-vm-persist <=> monitor-view.vm-persist;
+    in property <string> monitor-view-vm-odometer <=> monitor-view.vm-odometer;
+    in property <string> monitor-view-vm-tripa <=> monitor-view.vm-tripa;
+    in property <string> monitor-view-vm-tripb <=> monitor-view.vm-tripb;
+    in property <string> monitor-view-vm-last-charge <=> monitor-view.vm-last-charge;
+    in property <string> monitor-view-vm-efficiency <=> monitor-view.vm-efficiency;
+    in property <string> monitor-view-vm-power-pct <=> monitor-view.vm-power-pct;
+    in property <string> monitor-view-vm-speed <=> monitor-view.vm-speed;
+    in property <string> monitor-view-vm-tripid <=> monitor-view.vm-tripid;
+    in property <string> monitor-view-vm-tripaction <=> monitor-view.vm-tripaction;
+    in property <string> monitor-view-vm-range <=> monitor-view.vm-range;
+    in property <string> monitor-view-cm-target-charge-soc-pct <=> monitor-view.cm-target-charge-soc-pct;
+    in property <string> monitor-view-cm-target-charge-hours-rem <=> monitor-view.cm-target-charge-hours-rem;
+    in property <string> monitor-view-cm-cm-target-charge-min-rem <=> monitor-view.cm-target-charge-min-rem;
+    in property <string> monitor-view-cm-cm-target-charge-range <=> monitor-view.cm-target-charge-range;
+    in property <string> monitor-view-cm-charge-complete <=> monitor-view.cm-charge-complete;
+    in property <string> monitor-view-cm-soc-limit <=> monitor-view.cm-soc-limit;
+    in property <string> monitor-view-cm-soc-limit-selection-page <=> monitor-view.cm-soc-limit-selection-page;
+    in property <string> monitor-view-cm-va-limit <=> monitor-view.cm-va-limit;
+    in property <string> monitor-view-cm-va-limit-selection-page <=> monitor-view.cm-va-limit-selection-page;
+    in property <string> monitor-view-cm-store-cable-noti <=> monitor-view.cm-store-cable-noti;
+
+    in-out property <int> right-brake <=> monitor-view.right-brake;
+    in-out property <int> left-brake <=> monitor-view.left-brake;
+    in-out property <int> kill-sw <=> monitor-view.kill-sw;
+    in-out property <int> power-sw <=> monitor-view.power-sw;
+    in-out property <int> reverse-sw <=> monitor-view.reverse-sw;
+    in-out property <int> side-stand-sw <=> monitor-view.side-stand-sw;
+    in-out property <int> ride-mode-sw <=> monitor-view.ride-mode-sw;
+    in-out property <int> hazard-sw <=> monitor-view.hazard-sw;
+    in-out property <int> horn-sw <=> monitor-view.horn-sw;
+    in-out property <int> right-indicator-sw <=> monitor-view.right-indicator-sw;
+    in-out property <int> left-indicator-sw <=> monitor-view.left-indicator-sw;
+    in-out property <int> high-beam-sw <=> monitor-view.high-beam-sw;
+    in-out property <int> start-sw <=> monitor-view.start-sw;
+    in-out property <int> seat-sw <=> monitor-view.seat-sw;
+    in-out property <int> trip-sw <=> monitor-view.trip-sw;
+    in-out property <int> down-sw <=> monitor-view.down-sw;
+
+    VerticalBox {
+        tab := TabWidget {
+
+            Tab {
+                title: "UDS";
+                service-view := ServiewView {
+                }
+            }
+
+            Tab {
+                title: "Monitor";
+                monitor-view := MonitorView {
+                }
+            }
+
+            Tab {
+                title: "About";
+                VerticalBox {
+                    Text {
+                        text: "ION Diagnostic \{root.cargo-ui-version}";
+                        font-size: 40px;
+                    }
+                    Text {
+                        text: "https://github.com/Ion-Mobility/ECU-Diagnostics";
+                        color: blue;
+                        TouchArea { clicked => { root.open-url(parent.text); } }
+                    }
+                    Text {
+                        text: "License: GNU General Public License Version 3";
+                    }
+
+                    Rectangle {}
+
+                    HorizontalBox {
+                        alignment: center;
+                        vertical-stretch: 0;
+                        TouchArea {
+                            clicked => { root.open-url("https://ionmobility.com/"); }
+                            VerticalLayout {
+                                Image {
+                                    source: @image-url("../icons/ionmobility_logo.jpg");
+                                    width: 128px;
+                                    height: 128px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        HorizontalBox {
+            Text { text: "CAN Connection ";vertical-alignment: center; visible: true;}
+            Rectangle {
+                background: grey;
+                can-connection-status := LineEdit {
+                    read-only: true;
+                    text: "Can Connection Status...";
+                    width: 400px;
+                }
+
+                states [
+                    no-status when root.can-connection-state == 0: {
+                        can-connection-status.text: "No Status";
+                        background : grey;
+                    }
+                    connected when root.can-connection-state == 1: {
+                        can-connection-status.text: "Connected";
+                        background : green;
+                    }
+                    disconnected when root.can-connection-state == 2: {
+                        can-connection-status.text: "Disconnected. Restart Diagnostic App to reconnect";
+                        background : red;
+                    }
+                ]
+            }
+            Text { text: "TCP Connection ";vertical-alignment: center; visible: true;}
+            tcp-connection-color := Rectangle {
+                background: grey;
+                tcp-connection-status := LineEdit {
+                    read-only: true;
+                    text: "Mode...";
+                    width: 400px;
+                }
+
+                states [
+                    no-status when root.tcp-connection-state == 0: {
+                        tcp-connection-status.text: "No Status";
+                        background : grey;
+                    }
+                    connected when root.tcp-connection-state == 1: {
+                        tcp-connection-status.text: "Connected";
+                        background : green;
+                    }
+                    disconnected when root.tcp-connection-state == 2: {
+                        tcp-connection-status.text: "Disconnected. Restart Diagnostic App to reconnect";
+                        background : red;
+                    }
+                ]
+            }
+        }
+    }
+}

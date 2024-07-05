@@ -1,0 +1,29 @@
+[package]
+name = "ion-diagnostic-external"
+version = "1.0.0"
+authors = ["ION Mobility"]
+edition = "2021"
+build = "build.rs"
+license = "GPL-3.0-only"
+description = "GUI for Diagnostic App"
+categories = ["development-tools::cargo-plugins"]
+keywords = ["diagnositc", "ecu", "gui"]
+repository = "https://github.com/Ion-Mobility/ECU-Diagnostics"
+resolver = "2"
+
+[features]
+slint-backend-qt = ["slint/backend-qt"]
+slint-backend-gl-all = ["slint/backend-winit", "slint/renderer-winit-femtovg"]
+slint-backend-gl-wayland = ["slint/backend-winit-wayland", "slint/renderer-winit-femtovg"]
+slint-backend-gl-x11 = ["slint/backend-winit-x11", "slint/renderer-winit-femtovg"]
+
+default = ["slint-backend-qt", "slint-backend-gl-all"]
+
+[dependencies]
+slint = { version = "1.3", default-features = false, features = [ "compat-1-0" ] }
+chrono = "0.4"
+ecu-diag = { path = "../ecu-diag" } # this is our lib defined as external crate
+
+[build-dependencies]
+slint-build = { version = "1.3" }
+

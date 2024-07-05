@@ -1,0 +1,298 @@
+import {
+    VerticalBox, HorizontalBox, GridBox, Button,
+    TextEdit, ListView, GroupBox, CheckBox, LineEdit, ComboBox
+} from "std-widgets.slint";
+
+export struct Action {
+    service: string,
+    option1: string,
+    option2: string,
+    option3: string,
+}
+
+export component ServiewView inherits GridBox {
+
+    private property <[string]> option1-model;
+    private property <[string]> option2-model;
+
+    private property <bool> option2-visible;
+    in property <string> output <=> arguments-le.text;
+
+    in-out property <bool> is-streaming: false;
+    in-out property <Action> streaming-action;
+    in-out property <string> stream-action-text: "▶ Stream";
+
+    in-out property <string> current-running-service;
+
+    in property <int> diagostic-state : 1;
+
+    in property <int> tcp-connection-state;
+    in property <int> can-connection-state;
+
+    callback service-selected(string);
+    callback action-submit(Action);
+    callback action-stream(Action);
+    callback action-cancel();
+    callback action-get-result(string);
+
+    GridLayout {
+        Row {
+            Text { text: "Service: ";vertical-alignment: center;}
+            service_cb := ComboBox {
+                width: 400px;
+                height: 40px;
+                enabled: true;
+                current-value: "...";
+                model: ["...", "Read", "Routine", "Connectivity", "Reset", "Set Mode"];
+                selected(service) => {
+                    if service == "Read" {
+                        root.option1-model = ["Bike State and Bike Lock",
+                        "Switch Gear",
+                        "Error Code",
+                        "Inertial measurement unit (IMU)",
+                        "Keyfob Data",
+                        "Vehicle Metrics 1",
+                        "Vehicle Metrics 2",
+                        "Charge Metrics",
+                        "Firmware Version",
+                        "Analog-Digital Converter Voltage",
+                        "Battery management system (BMS) Data1",
+                        "Battery management system (BMS) Data2",
+                        "Battery management system (BMS) Data3",
+                        "Dashboard",
+                        "Temmperature Sensors",
+                        "Diag State",];
+                        root.option2-visible = false;
+                    } else if service == "Routine" {
+                        root.option1-model = [                        
+                        "Open Debug Screen", 
+                        "Close Debug Screen",
+                        "Toggle Off BMS Voltage",
+                        "Toggle On BMS Voltage",
+                        "Bike Force Unlock",
+                        "Bike Force Lock",
+                        //"Simulate VCU Input",
+                        //"Trigger VCU Output",
+                        ];
+                    } else if service == "Connectivity" {
+                        root.option1-model = [
+                        "Wifi Scan",
+                        "Wifi Check IP",
+                        "Wifi Restart App",
+                        "GPS Check Log",
+                        "LTE Check IP",
+                        "LTE Check Ping",
+                        "LTE Check Enable Signal",
+                        "LTE Get Modem Info",
+                        "LTE Enable LTE/GPS",
+                        "LTE Disable LTE/GPS",
+                        "LTE Get Signal Strength",
+                        "BLE Restart App",
+                        "BLE Check Pair",
+                        "IMX Check Service Status",
+                        ];
+                        root.option2-visible = false;
+                    } else if service == "Reset" {
+                        root.option1-model = ["Realtime 118",
+                        "Telematic 148",
+                        //"IMX",
+                        "ESP32 WIFI",
+                        "ESP32 BLE",
+                        "QUECTEL",
+                        "LIZARD",
+                        "CENDRIC"];
+                    } else if service == "Set Mode" {
+                        root.option1-model = ["User Mode",
+                        "Debug Mode",
+                        "Stream Mode",];
+                        root.option2-visible = false;
+                    } else {
+                        root.option1-model = ["Select service..."];
+                        root.option2-visible = false;
+                    }                
+                }
+            }
+        }
+    
+        Row {
+            Text { text: "Option 1: ";vertical-alignment: center;}
+            option1_cb := ComboBox {
+                width: 400px;
+                height: 40px;
+                enabled: true;
+                visible: true;
+                model: root.option1-model;
+                selected(service) => {
+                    if service == "Simulate VCU Input" {
+                        root.option2-model = ["Right Brake Switch",
+                        "Left Brake Switch",
+                        "Kill Switch",
+                        "Power Switch",
+                        "Reverse Switch",
+                        "Side Stand Switch",
+                        "Ride Mode Switch",
+                        "Hazard Switch",
+                        "Horn Switch",
+                        "Right Indicator Switch",
+                        "Left Indicator Switch",
+                        "High Beam Switch",
+                        "Start Switch",
+                        "Seat Switch",
+                        "Trip Switch",
+                        "Down Switch",
+                        "Keyfob Short Press",
+                        "Keyfob Long Press",
+                    ];
+                        root.option2-visible = true;
+                    } else if service == "Trigger VCU Output" {
+                        root.option2-model = ["Rear Right Indicator",
+                        "Rear Left Indicator",
+                        "Brake Light",
+                        "Horn",
+                        "High Beam",
+                        "Low Beam",
+                        "License Plate",
+                        "Front Left Indicator",
+                        "Front Right Indicator",
+                        "Tail Light",
+                        "Seat Lock",
+                        "BMS Enable",
+                        "Motor Enable",
+                        "Steer Lock",
+                        "DRL",
+                        "Tire Pressure Monitoring System (TPMS)",  
+                        "Side Stand Power",
+                    ];            
+                        root.option2-visible = true;
+                    }
+                }
+            }
+        }   
+    
+        Row {
+            Text { text: "Option 2: ";vertical-alignment: center; visible: root.option2-visible;}
+            option2_cb := ComboBox {
+                width: 400px;
+                height: 40px;
+                enabled: true;
+                visible: root.option2-visible;
+                model: root.option2-model;
+            }
+        }
+    
+        Row {
+            Text { text: "Option 3: ";vertical-alignment: center; visible: root.option2-visible;}
+            option3_cb := ComboBox {
+                width: 400px;
+                height: 40px;
+                enabled: true;
+                visible: root.option2-visible;
+                current-value: "Enable";
+                model: ["Enable", "Disable"];
+            }
+        }
+    
+        Row {
+            Button {
+                text: "✔️ Submit";
+                enabled: root.tcp-connection-state == 1 && root.can-connection-state == 1 ? true : false;
+                clicked => {
+                    root.action-submit({
+                        service: service_cb.current-value,
+                        option1: option1-cb.current-value,
+                        option2: option2-cb.current-value,
+                        option3: option3-cb.current-value,
+                    });
+                }
+            }
+            arguments-le := TextEdit {
+                rowspan: 4;
+                colspan: 2;
+                read-only: true;
+                text: "Output...";
+                wrap: word-wrap;
+            }
+        }
+
+        Row {
+            Button {
+                text: "📊 Get Result";
+                enabled: root.tcp-connection-state == 1 && root.can-connection-state == 1 ? true : false;
+                clicked => {
+                    root.action-get-result(root.current-running-service);
+                }
+            }
+        }
+
+        Row {
+            Button {
+                text: stream-action-text;
+                clicked => {
+                    root.action-stream({
+                        service: service_cb.current-value,
+                        option1: option1-cb.current-value,
+                        option2: option2-cb.current-value,
+                        option3: option3-cb.current-value,
+                    });
+                }
+                enabled: true;
+                states [
+                    off when root.tcp-connection-state != 1 || root.can-connection-state != 1 : {
+                        text: "▶ Stream";
+                        enabled: false;
+                    }
+                    active-streaming when service_cb.current-value == "Read" && root.is-streaming: {
+                        text: "⏹ Stop";
+                        enabled: true;
+                    }
+                    active-stop when service_cb.current-value == "Read" && !root.is-streaming: {
+                        text: "▶ Stream";
+                        enabled: true;
+                    }
+                    inactive when service_cb.current-value != "Read": {
+                        text: "▶ Stream";
+                        enabled: false;
+                    }
+                ]
+            }
+        }
+
+        Row {
+            Rectangle {visible: false; background: red;}
+        }
+    
+        Row {
+            Text { text: "Mode: ";vertical-alignment: center; visible: true;}
+            Rectangle {
+                background: cyan;
+                mode-status := LineEdit {
+                    read-only: true;
+                    text: "Mode...";
+                }
+
+                states [
+                    user-mode when root.diagostic-state == 1: {
+                        mode-status.text: "User Mode";
+                        background : blue;
+                    }
+                    debug-mode when root.diagostic-state == 2: {
+                        mode-status.text: "Debug Mode";
+                        background : green;
+                    }
+                    stream-mode when root.diagostic-state == 3: {
+                        mode-status.text: "Stream Mode";
+                        background : brown;
+                    }
+                    stream-mode when root.diagostic-state == 3: {
+                        mode-status.text: "Invalid Mode. Reset mode back to User Mode";
+                        background : red;
+                    }
+                ]
+            }
+
+
+            
+        }
+    }      
+    
+}

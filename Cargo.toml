@@ -1,0 +1,4 @@
+# this now doesn't have a [package] or [dependencies] sections
+
+[workspace]
+members = ["ecu-diag", "cli", "gui-internal", "gui-external"]

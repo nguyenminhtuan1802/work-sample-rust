@@ -1,0 +1,352 @@
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { VerticalBox, ListView } from "std-widgets.slint";
+import { StandardTableView } from "std-widgets.slint";
+
+component Circle inherits Rectangle {
+    width: 25px;
+    height: 25px;
+    border-radius: root.width / 2;
+    background: brown;
+}
+
+component SwitchGear inherits HorizontalLayout {
+    in property <string> sw-name;
+    in-out property <int> state;
+
+
+    circle := Circle { y: 2px;}
+    sw := Text { text: root.sw-name ;vertical-alignment: center; color: brown;}
+    width: 150px;
+    spacing: 3px;
+
+
+    states [
+        on when state == 1: {
+            circle.color : green;
+            sw.color : green;
+            in {
+                animate circle.color, sw.color { duration: 100ms; }
+            }
+            out {
+                animate circle.color, sw.color { duration: 100ms; }
+            }
+        }
+        off when state == 0: {
+            circle.color : red;
+            sw.color : red;
+            in {
+                animate circle.color, sw.color { duration: 100ms; }
+            }
+            out {
+                animate circle.color, sw.color { duration: 100ms; }
+            }
+        }
+    ]
+}
+
+export component MonitorView {
+
+    in-out property <bool> is-streaming: false;
+    in-out property <string> start-action-text: "▶ Start";
+
+    in property <int> can-connection-state;
+    in property <int> tcp-connection-state;
+
+    callback action-start();
+
+    in property <string> temp1;
+    in property <string> temp2;
+    in property <string> temp3;
+    in property <string> temp4;
+
+    in property <string> acc-x;
+    in property <string> acc-y;
+    in property <string> acc-z;
+    in property <string> gyr-x;
+    in property <string> gyr-y;
+    in property <string> gyr-z;
+
+    in property <string> rke-rssi;
+    in property <string> pke-rssi;
+    in property <string> throttle-pct;
+    in property <string> throttle-filt;
+
+    in property <string> rke;
+    in property <string> pke;
+    in property <string> pke-distance;
+
+    in property <string> cpu-118;
+    in property <string> cpu-148;
+
+    in property <string> fw-rt-major;
+    in property <string> fw-rt-minor;
+    in property <string> fw-tm-major;
+    in property <string> fw-tm-minor;
+
+    in property <string> dtc-syscode;
+    in property <string> dtc-bmscode;
+    in property <string> dtc-mccode;
+    in property <string> dtc-obccode;
+    in property <string> dtc-outputcode;
+
+    in property <string> adc-12v;
+    in property <string> adc-5v;
+    in property <string> adc-3v;
+
+    in property <string> bike-status;
+    in property <string> bike-lock;
+
+    in property <string> bms-status;
+    in property <string> bms-predischarge-relay;
+    in property <string> bms-discharge-relay;
+    in property <string> bms-charging-relay;
+    in property <string> bms-dcdc-enable;
+    in property <string> bms-charger;
+    in property <string> bms-soc-pct;
+    in property <string> bms-soh-pct;
+    in property <string> bms-alive-counter;
+    in property <string> bms-volt;
+    in property <string> bms-current;
+    in property <string> bms-dcdc-enable-status;
+    in property <string> bms-max-discharge-current;
+    in property <string> bms-max-regen-current;
+    in property <string> bms-highest-cell-volt;
+    in property <string> bms-lowest-cell-volt;
+    in property <string> bms-max-temp;
+    in property <string> bms-max-temp-number;
+    in property <string> bms-min-temp;
+    in property <string> bms-min-temp-number;
+    in property <string> bms-charge-discharge-cycles;
+
+    in property <string> obc-activation-status;
+    in property <string> obc-output-dc-volt;
+    in property <string> obc-output-dc-current;
+    in property <string> obc-max-temp;
+    in property <string> obc-input-volt;
+    in property <string> obc-input-current;
+    in property <string> obc-stop-tx;
+    in property <string> obc-alive-counter;
+    in property <string> obc-error1-hw;
+    in property <string> obc-error2-temp;
+    in property <string> obc-error3-voltln;
+    in property <string> obc-error4-current;
+    in property <string> obc-error5-comn;
+
+    in property <string> vm-persist;
+    in property <string> vm-odometer;
+    in property <string> vm-tripa;
+    in property <string> vm-tripb;
+    in property <string> vm-last-charge;
+    in property <string> vm-efficiency;
+    in property <string> vm-power-pct;
+    in property <string> vm-speed;
+    in property <string> vm-tripid;
+    in property <string> vm-tripaction;
+    in property <string> vm-range;
+
+    in property <string> cm-target-charge-soc-pct;
+    in property <string> cm-target-charge-hours-rem;
+    in property <string> cm-target-charge-min-rem;
+    in property <string> cm-target-charge-range;
+    in property <string> cm-charge-complete;
+    in property <string> cm-soc-limit;
+    in property <string> cm-soc-limit-selection-page;
+    in property <string> cm-va-limit;
+    in property <string> cm-va-limit-selection-page;
+    in property <string> cm-store-cable-noti;
+
+    in-out property <int> right-brake <=> right-brake.state;
+    in-out property <int> left-brake <=> left-brake.state;
+    in-out property <int> kill-sw <=> kill-sw.state;
+    in-out property <int> power-sw <=> power-sw.state;
+    in-out property <int> reverse-sw <=> reverse-sw.state;
+    in-out property <int> side-stand-sw <=> side-stand-sw.state;
+    in-out property <int> ride-mode-sw <=> ride-mode-sw.state;
+    in-out property <int> hazard-sw <=> hazard-sw.state;
+    in-out property <int> horn-sw <=> horn-sw.state;
+    in-out property <int> right-indicator-sw <=> right-indicator.state;
+    in-out property <int> left-indicator-sw <=> left-indicator.state;
+    in-out property <int> high-beam-sw <=> high-beam.state;
+    in-out property <int> start-sw <=> start-sw.state;
+    in-out property <int> seat-sw <=> seat-sw.state;
+    in-out property <int> trip-sw <=> trip-sw.state;
+    in-out property <int> down-sw <=> down-sw.state;
+
+    GridLayout {
+        spacing: 20px;
+        HorizontalLayout {
+            Button {
+                width: 100px;
+                text: root.start-action-text;
+                clicked => {
+                    root.action-start();
+                }
+                enabled: root.tcp-connection-state == 1 && root.can-connection-state == 1 ? true : false;
+                states [
+                    start when root.is-streaming: {
+                        text: "⏹ Stop";
+                    }
+                    stop when !root.is-streaming: {
+                        text: "▶ Start";
+                    }
+                ]
+            }
+            row : 1;
+        }
+        HorizontalLayout {
+            spacing: 20px;
+            right-brake := SwitchGear {sw-name: "Right Brake";}
+            left-brake :=SwitchGear {sw-name: "Left Brake";}
+            kill-sw := SwitchGear {sw-name: "Kill Switch";}
+            power-sw := SwitchGear {sw-name: "Power Switch";}
+            reverse-sw := SwitchGear {sw-name: "Reverse Switch";}
+            side-stand-sw := SwitchGear {sw-name: "Side Stand Switch";}
+            ride-mode-sw := SwitchGear {sw-name: "Ride Mode Switch";}
+            hazard-sw := SwitchGear {sw-name: "Hazard Switch";}
+            row : 2;
+        }
+        HorizontalLayout {
+            spacing: 20px;
+            horn-sw := SwitchGear {sw-name: "Horn Switch";}
+            right-indicator := SwitchGear {sw-name: "Right Indicator";}
+            left-indicator := SwitchGear {sw-name: "Left Indicator";}
+            high-beam := SwitchGear {sw-name: "High Beam";}
+            start-sw := SwitchGear {sw-name: "Start Switch";}
+            seat_sw := SwitchGear {sw-name: "Seat Switch";}
+            trip-sw := SwitchGear {sw-name: "Trip Switch";}
+            down-sw := SwitchGear {sw-name: "Down Switch";}
+            row : 3;
+        }
+        HorizontalLayout {
+            row : 4;
+            preferred_height: 700px;
+            preferred_width: 1300px;
+            in property <string> test-pro;
+            StandardTableView {
+                columns: [
+                    { title: "Sensors" },
+                    { title: "Value" },
+                    { title: "DTC" },
+                    { title: "Value" },
+                    { title: "BMS" },
+                    { title: "Value" },
+                    { title: "OBC" },
+                    { title: "Value" },
+                    { title: "Vehicle Metrics", width : 140px },
+                    { title: "Value" },
+                    { title: "Charge Metrics", width : 140px },
+                    { title: "Value" },
+                ];
+
+                rows: [
+                    [
+                        { text: "Temp 1"}, { text: root.temp1 }, { text: "System Code" }, { text: root.dtc-syscode }, { text: "Status" }, { text: root.bms-status },
+                        { text: "Activation Status" }, { text: root.obc-activation-status }, { text: "Persist" }, { text: root.vm-persist },
+                        { text: "Target Charge SOC PCT" }, { text: root.cm-target-charge-soc-pct }
+                    ],
+                    [
+                        { text: "Temp 2" }, { text: root.temp2 }, { text: "BMS Code" }, { text: root.dtc-bmscode }, { text: "Pre-discharge relay" }, { text: root.bms-predischarge-relay },
+                        { text: "Output DC Voltage" }, { text: root.obc-output-dc-volt }, { text: "Odometer" }, { text: root.vm-odometer },
+                        { text: "Tartget Charge Hours Rem" }, { text: root.cm-target-charge-hours-rem }
+                    ],
+                    [
+                        { text: "Temp 3" }, { text: root.temp3 }, { text: "MC Code" }, { text: root.dtc-mccode }, { text: "Discharge relay" }, { text: root.bms-discharge-relay },
+                        { text: "Output DC Current" }, { text: root.obc-output-dc-current }, { text: "TripA" }, { text: root.vm-tripa },
+                        { text: "Tartget Charge Min Rem" }, { text: root.cm-target-charge-min-rem }
+                    ],
+                    [
+                        { text: "Temp 4" }, { text: root.temp4 }, { text: "OBC Code" }, { text: root.dtc-obccode }, { text: "Charging relay" }, { text: root.bms-charging-relay },
+                        { text: "Max Temp" }, { text: root.obc-max-temp }, { text: "TripB" }, { text: root.vm-tripb },
+                        { text: "Tartget Charge Range" }, { text: root.cm-target-charge-range }
+                    ],
+                    [
+                        { text: "ACC X" }, { text: root.acc-x }, { text: "Output Code" }, { text: root.dtc-outputcode }, { text: "DC-DC enable" }, { text: root.bms-dcdc-enable },
+                        { text: "AC Input Volt" }, { text: root.obc-input-volt }, { text: "Last Charge" }, { text: root.vm-last-charge },
+                        { text: "Charge Complete" }, { text: root.cm-charge-complete }
+                    ],
+                    [
+                        { text: "ACC Y" }, { text: root.acc-y }, { text: " " }, { text: " " }, { text: "Charger" }, { text: root.bms-charger },
+                        { text: "AC Input Current" }, { text: root.obc-input-current }, { text: "Efficiency" }, { text: root.vm-efficiency },
+                        { text: "SOC Limit" }, { text: root.cm-soc-limit }
+                    ],
+                    [
+                        { text: "ACC Z" }, { text: root.acc-z }, { text: "ADC" }, { text: "Value" }, { text: "SOC PCT" }, { text: root.bms-soc-pct },
+                        { text: "Stop tx" }, { text: root.obc-stop-tx }, { text: "Power PCT" }, { text: root.vm-power-pct },
+                        { text: "SOC Limit Selection Page" }, { text: root.cm-soc-limit-selection-page }
+                    ],
+                    [
+                        { text: "GYR X" }, { text: root.gyr-x }, { text: "Volt 12V" }, { text: root.adc-12v }, { text: "SOH PCT" }, { text: root.bms-soh-pct },
+                        { text: "Alive counter" }, { text: root.obc-alive-counter }, { text: "Speed" }, { text: root.vm-speed },
+                        { text: "VA Limit" }, { text: root.cm-va-limit }
+                    ],
+                    [
+                        { text: "GYR Y" }, { text: root.gyr-y }, { text: "Volt 5V" }, { text: root.adc-5v }, { text: "Alive counter" }, { text: root.bms-alive-counter },
+                        { text: "Error1 hardware" }, { text: root.obc-error1-hw }, { text: "TripID" }, { text: root.vm-tripid },
+                        { text: "VA Limit Selection Page" }, { text: root.cm-va-limit-selection-page }
+                    ],
+                    [
+                        { text: "GYR Z" }, { text: root.gyr-z }, { text: "Volt 3V" }, { text: root.adc-3v }, { text: "DC-DC enable status" }, { text: root.bms-dcdc-enable-status },
+                        { text: "Error2 temp" }, { text: root.obc-error2-temp }, { text: "Trip Action" }, { text: root.vm-tripaction },
+                        { text: "Store Cable Noti" }, { text: root.cm-store-cable-noti }
+                    ],
+                    [
+                        { text: "RKE RSSI" }, { text: root.rke-rssi }, { text: "" }, { text: "" }, { text: "Max discharge current" }, { text: root.bms-max-discharge-current },
+                        { text: "Error3 Volt In" }, { text: root.obc-error3-voltln }, { text: "Range" }, { text: root.vm-range },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "PKE RSSI" }, { text: root.pke-rssi }, { text: "Bike Status" }, { text: "Value" }, { text: "Max regen current" }, { text: root.bms-max-regen-current },
+                        { text: "Error4 current" }, { text: root.obc-error4-current }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Throttle PCT" }, { text: root.throttle-pct }, { text: "Bike State" }, { text: root.bike-status }, { text: "Highest cell voltage" }, { text: root.bms-highest-cell-volt },
+                        { text: "Error5 comm" }, { text: root.obc-error5-comn }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Throttle Filt" }, { text: root.throttle-filt }, { text: "Bike Lock" }, { text: root.bike-lock }, { text: "Lowest cell voltage" }, { text: root.bms-lowest-cell-volt },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "" }, { text: "" }, { text: "RKE" }, { text: root.rke }, { text: "Max temp" }, { text: root.bms-max-temp },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Firmware Version" }, { text: "Value" }, { text: "PKE" }, { text: root.pke }, { text: "Max temp number" }, { text: root.bms-max-temp-number },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Realtime Major Version" }, { text: root.fw-rt-major }, { text: "PKE Distance" }, { text: root.pke-distance }, { text: "Min temp" }, { text: root.bms-min-temp },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Realtime Minor Version" }, { text: root.fw-rt-minor }, { text: "CPU RT" }, { text: root.cpu-118 }, { text: "Min temp number" }, { text: root.bms-min-temp-number },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Telamtic Major Version" }, { text: root.fw-tm-major }, { text: "CPU TM" }, { text: root.cpu-148 }, { text: "Charge discharge cycles" }, { text: root.bms-charge-discharge-cycles },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "Telematic Minor Version" }, { text: root.fw-tm-minor }, { text: "" }, { text: "" }, { text: "BMS Voltage" }, { text: root.bms-volt },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                    [
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "BMS Current" }, { text: bms-current },
+                        { text: "" }, { text: "" }, { text: "" }, { text: "" },
+                        { text: "" }, { text: "" }
+                    ],
+                ];
+            }
+        }
+    }
+
+}
